@@ -5,7 +5,7 @@ import {View,ScrollView,Text, Image, TouchableOpacity} from 'react-native';
 import {widthPercentageToDP as wp,heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 // estilos
-import { imagensCasas,telaDeCadastrostilo,containerTelaCadastro,textTelaDeCadastro,botao,telaInicial,listagem } from "../stilos/estilos";
+import { containerTelaCadastro,listagem,ContainerbotaoTelaListagem } from "../stilos/estilos";
 
 // DataBase
 import ItemDatabase from "../database/ItemDatabase";
@@ -13,24 +13,44 @@ import ItemDatabase from "../database/ItemDatabase";
 
 
 
+
+
 class ListarImovel extends Component{
+    
     constructor(props){
+        
         super(props)
         this.state={
+
+           
             listaDeImoveis:[]
+
         }
         this.ListarImoveiCadastrados()
     }
     ListarImoveiCadastrados =()=>{
         const DB = new ItemDatabase()
         DB.Listar().then(listaCompleta => {this.setState({listaDeImoveis:listaCompleta})})
+        
 
+    }
+
+    RemoverAnuncio = (id)=>{
+        const DB = new ItemDatabase()
+        DB.Remover(id)
+        this.ListarImoveiCadastrados()
+
+        
     }
     render(){
         return(
             <ScrollView style={containerTelaCadastro.preenchimentoFundoScrollView} >
                 {
+                    
                     this.state.listaDeImoveis.map(elementoLista =>(
+                        
+                        
+                       
                 <View style={containerTelaCadastro.preenchimentoFundoView}>
                     
                              
@@ -39,11 +59,15 @@ class ListarImovel extends Component{
                     
                     <View style={listagem.imgLisatagem}>
                         
-                        <Image style={listagem.imgLisatagem}></Image>
+                        <Image style={listagem.imgLisatagem} 
+                        
+                        source ={{uri:elementoLista.anuncioImage}}></Image>
                     </View>
 
 
                     <View style={listagem.viewListaAtributosImoveis}>
+                    <Text style={listagem.textAtributosListaImoveis}> ID: {this.props.tipo = elementoLista.id}</Text>
+
                     <Text style={listagem.textAtributosListaImoveis}> Tipo: {this.props.tipo = elementoLista.tipo}</Text>
                     
                     
@@ -57,17 +81,35 @@ class ListarImovel extends Component{
                     
                    
                     <Text style={listagem.textAtributosListaImoveis}> Valor R$: {this.props.valor = elementoLista.valor}</Text>
+                   
                     </View>
 
-
-                    <View style={{marginBottom:90}}>
-                        </View>    
                     
+                   
+                    
+
+
+                        <View style={ContainerbotaoTelaListagem.containerBotoes}>
+                            <TouchableOpacity style={ContainerbotaoTelaListagem.botaoEdtitRemove}>
+                                <Text style={ContainerbotaoTelaListagem.textBotaoRemoverEditar}>Editar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={ContainerbotaoTelaListagem.botaoEdtitRemove} onPress={()=>this.RemoverAnuncio(this.props.id = elementoLista.id)} >
+                            <Text style={ContainerbotaoTelaListagem.textBotaoRemoverEditar}>Remover</Text>
+                            </TouchableOpacity>
+                        </View>
+
+
+                       
+                   
                 </View>
+               
                
 
                 ))
                     }
+
+
+                        
             </ScrollView>
         );
     }

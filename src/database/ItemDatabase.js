@@ -2,7 +2,7 @@ import SQLite from "react-native-sqlite-storage";
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
-const database_name = "imobiliaria.db"; //Nome do banco de dados
+const database_name = "anuncioNovaimobiliaria.db"; //Nome do banco de dados
 const database_version = "1.0"; //Versão do banco de dados
 const database_displayname = "SQLite React Offline Database"; //Nome de exibição do banco de dados
 const database_size = 200000; //tamanho máximo do banco de dados
@@ -31,7 +31,7 @@ export default class ItemDatabase {
                         console.log("O Banco de dados não está pronto... Criando tabela");
                         db.transaction((tx) => {
                             // aqui a tabela é criada, se ainda não existir
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS imovel (id INTEGER PRIMARY KEY AUTOINCREMENT, tipo VARCHAR(30),endereco VARCHAR(100), finalidade VARCHAR(30), valor VARCHAR(11))');
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS imovel (id INTEGER PRIMARY KEY AUTOINCREMENT,anuncioImage TEXT(300), tipo VARCHAR(30),endereco VARCHAR(100), finalidade VARCHAR(30), valor VARCHAR(11))');
                         }).then(() => {
                             console.log("Tabela criada com Sucesso");
                         }).catch(error => {
@@ -72,8 +72,8 @@ export default class ItemDatabase {
                         var len = results.rows.length;
                         for (let i = 0; i < len; i++) {
                             let row = results.rows.item(i);
-                            const { id,tipo,endereco,finalidade,valor } = row;
-                            lista.push({ id,tipo,endereco,finalidade,valor});
+                            const { id,tipo,endereco,finalidade,valor,anuncioImage } = row;
+                            lista.push({ id,tipo,endereco,finalidade,valor,anuncioImage});
                         }
                         console.log(lista);
                         resolve(lista);
@@ -100,7 +100,7 @@ export default class ItemDatabase {
             this.Conectar().then((db) => {
                 db.transaction((tx) => {
                     //Query SQL para inserir um novo registro 
-                    tx.executeSql('INSERT INTO imovel (tipo,endereco,finalidade,valor) VALUES (?, ?, ?, ?)', [item.tipo, item.endereco, item.finalidade, item.valor]).then(([tx, results]) => {
+                    tx.executeSql('INSERT INTO imovel (tipo,endereco,finalidade,valor,anuncioImage) VALUES (?,?, ?, ?, ?)', [item.tipo, item.endereco, item.finalidade, item.valor,item.anuncioImage]).then(([tx, results]) => {
                         resolve(results);
                     });
                 }).then((result) => {
@@ -173,7 +173,7 @@ export default class ItemDatabase {
 
     */
     //atualizar 2
-/*
+
     Remover(id) {   // CRUD => DELETE - aqui um registro da tabela é removido 
         return new Promise((resolve) => {
             this.Conectar().then((db) => {
@@ -193,6 +193,6 @@ export default class ItemDatabase {
             });
         });
     }
-    */
+
 
 }
